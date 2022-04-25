@@ -10,6 +10,7 @@ int main(){
     //Recorrer elementos y atributos
     extractNodeData(&myDoc);
 
+
     return 0;
 
 }
