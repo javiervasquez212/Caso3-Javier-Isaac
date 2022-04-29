@@ -1,3 +1,8 @@
+
+#ifndef _PATHPARSE_
+#define _PATHPARSE_ 0
+
+
 #include <iostream>
 #include <bits/stdc++.h>
 #include "rapidxml/rapidxml_ext.hpp"
@@ -5,25 +10,29 @@
 #include <sstream>
 #include <fstream>
 
+#include "Selection.h"
+
 using namespace std;
 using namespace rapidxml;
 
 void extractXMLData(xml_document<>* doc);
 void extractNodeData(xml_node<>* node);
 
-int hexadecimalToDecimal(string hexVal)
+vector<SVGData*> vectorData;
+
+int hexadecimalToDecimal(string pHexVal)
 {
-    int len = hexVal.size();
+    int len = pHexVal.size();
     int base = 1;
     int dec_val = 0;
     
     for (int i = len - 1; i >= 0; i--) {
-        if (hexVal[i] >= '0' && hexVal[i] <= '9') {
-            dec_val += (int(hexVal[i]) - 48) * base;
+        if (pHexVal[i] >= '0' && pHexVal[i] <= '9') {
+            dec_val += (int(pHexVal[i]) - 48) * base;
             base = base * 16;
         }
-        else if (hexVal[i] >= 'A' && hexVal[i] <= 'F') {
-            dec_val += (int(hexVal[i]) - 55) * base;
+        else if (pHexVal[i] >= 'A' && pHexVal[i] <= 'F') {
+            dec_val += (int(pHexVal[i]) - 55) * base;
             base = base * 16;
         }
     }
@@ -47,9 +56,25 @@ void extractColor(string pString){
       counter++;
     }
     if(pString[i] ==';'){
-      cout<< "Color en decimal:" << hexadecimalToDecimal(color) << endl;
-      cout<< "Color en HEX:" << color << endl;
-      break;
+
+      cout << hexadecimalToDecimal(color) << endl;
+
+      if(hexadecimalToDecimal(color)<2556159   && hexadecimalToDecimal(color)>65373 ){
+        cout<< "2556159 - 65373" << endl;
+        break;
+      }
+      if(hexadecimalToDecimal(color)<16776960 && hexadecimalToDecimal(color)>16711680 ){
+        cout<< "16776960 - 16711680" << endl;
+        break;
+      }
+      if(hexadecimalToDecimal(color)<16711680  && hexadecimalToDecimal(color)>2556159 ){
+        cout<< "16711680 - 2556159" << endl;
+        break;
+      }
+      if(hexadecimalToDecimal(color)<16711680  && hexadecimalToDecimal(color)>65373 ){
+        cout<< "16711680 - 65373" << endl;
+        break;
+      }
     }
   }
 }
@@ -87,6 +112,7 @@ void extractCoordinate(string pString){
       number = "";
     }
   }
+
   cout << "Maximo X,Y: " << *max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
   *max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
 
@@ -94,7 +120,11 @@ void extractCoordinate(string pString){
   *min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
 }
 
+
 void extractNodeData(xml_node<>* node){
+  coordinate X;
+  coordinate Y;
+  Range R;
   for (node = node->first_node(); node != NULL; node = node->next_sibling()){
     if (node->type() == node_element){
       if((string)node->name() == "path"){
@@ -105,6 +135,7 @@ void extractNodeData(xml_node<>* node){
           if((string)attrib->name() == "style"){
             extractColor((string)attrib->value());
           }
+          vectorData.push_back(SVGData(X,Y,R));
         }
         cout << "----------" << endl;
       }
@@ -112,3 +143,6 @@ void extractNodeData(xml_node<>* node){
     }
   }
 }
+
+
+#endif
