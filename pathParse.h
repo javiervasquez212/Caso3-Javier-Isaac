@@ -2,15 +2,15 @@
 #ifndef _PATHPARSE_
 #define _PATHPARSE_ 0
 
-
 #include <iostream>
 #include <bits/stdc++.h>
 #include "rapidxml/rapidxml_ext.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
 #include <sstream>
 #include <fstream>
-
-#include "Selection.h"
+#include "Coordinate.h"
+#include "Range.h"
+#include "SVGData.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -57,22 +57,22 @@ void extractColor(string pString){
     }
     if(pString[i] ==';'){
 
-      cout << hexadecimalToDecimal(color) << endl;
+      cout << "Code color path: " << "0x"+color << endl;
 
-      if(hexadecimalToDecimal(color)<2556159   && hexadecimalToDecimal(color)>65373 ){
-        cout<< "2556159 - 65373" << endl;
+      if(hexadecimalToDecimal(color)<=0x83FF00   && hexadecimalToDecimal(color)>=0x2700FF ){
+        cout<< "Range color: 0x83FF00 - 0x2700FF" << endl;
         break;
       }
-      if(hexadecimalToDecimal(color)<16776960 && hexadecimalToDecimal(color)>16711680 ){
-        cout<< "16776960 - 16711680" << endl;
+      if(hexadecimalToDecimal(color)<=0xFFFF00 && hexadecimalToDecimal(color)>=0xFF0000 ){
+        cout<< "Range color: 0xFFFF00 - 0xFF0000" << endl;
         break;
       }
-      if(hexadecimalToDecimal(color)<16711680  && hexadecimalToDecimal(color)>2556159 ){
-        cout<< "16711680 - 2556159" << endl;
+      if(hexadecimalToDecimal(color)<=0xFF0000  && hexadecimalToDecimal(color)>=0x83FF00 ){
+        cout<< "Range color: 0xFF0000 - 0x83FF00" << endl;
         break;
       }
-      if(hexadecimalToDecimal(color)<16711680  && hexadecimalToDecimal(color)>65373 ){
-        cout<< "16711680 - 65373" << endl;
+      if(hexadecimalToDecimal(color)<=0xFFFF00  && hexadecimalToDecimal(color)>=0x83FF00 ){
+        cout<< "Range color: 0xFFFF00 - 0x83FF00" << endl;
         break;
       }
     }
@@ -82,44 +82,70 @@ void extractColor(string pString){
 
 void extractCoordinate(string pString){
 
+  int flagX = 0;
+  int flagY = 0;
+
   vector<float> vectorCoordinatesX;
   vector<float> vectorCoordinatesY;
 
-  string number = "";
+  float absoluteX;
+  float absoluteY;
+  string numberStr = "";
+
   for (int i = 0; i < pString.length(); i++)
   {
     if(isdigit(pString[i]) ){
-        number += pString[i];
+        numberStr += pString[i];
     }
     else if(pString[i] == ','){
-      vectorCoordinatesX.push_back(std::stof(number));
-      number += pString[i];
-      number = "";
+
+      if(flagX !=0){
+      
+      vectorCoordinatesX.push_back(std::stof(numberStr)+absoluteX);
+      numberStr += pString[i];
+      numberStr = "";
+      }
+      else{
+        absoluteX = std::stof(numberStr);
+        numberStr="";
+        flagX++;
+      } 
     }
     else if (pString[i] == '.')
     {
-      number += pString[i];
+      numberStr += pString[i];
     }
     else if (pString[i] == '-')
     {
-      number += pString[i];
+      numberStr += pString[i];
     }
     else if (pString[i] == ' ')
     {
-      if(number != ""){
-        vectorCoordinatesY.push_back(std::stof(number));
+      if(flagY!=0){
+        if(numberStr != "" && std::stof(numberStr)!=absoluteY){
+          vectorCoordinatesY.push_back(std::stof(numberStr)+absoluteY);
+          }
+          numberStr = "";
       }
-      number = "";
+        else if(flagY == 0 && numberStr!="") {
+          absoluteY = std::stof(numberStr);
+          flagY++;
+        }
     }
   }
 
-  cout << "Maximo X,Y: " << *max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
-  *max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
+  cout << absoluteX << "/" << absoluteY << endl;
+  cout << vectorCoordinatesX.size() << "/" << vectorCoordinatesY.size() << endl;
 
-  cout << "Minimo X,Y: " << *min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
-  *min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
+  if(vectorCoordinatesX.size()!=0 && vectorCoordinatesY.size()!=0){    
+
+    cout << "Maximo X,Y: " << *max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
+    *max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
+    cout << "Minimo X,Y: " << *min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
+    *min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
+    
+  }
 }
-
 
 void extractNodeData(xml_node<>* node){
   coordinate X;
@@ -135,7 +161,6 @@ void extractNodeData(xml_node<>* node){
           if((string)attrib->name() == "style"){
             extractColor((string)attrib->value());
           }
-          vectorData.push_back(SVGData(X,Y,R));
         }
         cout << "----------" << endl;
       }
