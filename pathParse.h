@@ -10,7 +10,7 @@
 #include <fstream>
 #include "Coordinate.h"
 #include "Range.h"
-#include "SVGData.h"
+#include "PathData.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -18,7 +18,7 @@ using namespace rapidxml;
 void extractXMLData(xml_document<>* doc);
 void extractNodeData(xml_node<>* node);
 
-vector<SVGData*> vectorData;
+vector<PathData*> vectorData;
 
 int hexadecimalToDecimal(string pHexVal)
 {
@@ -79,17 +79,17 @@ void extractColor(string pString){
   }
 }
 
-
 void extractCoordinate(string pString){
 
   int flagX = 0;
   int flagY = 0;
 
+  float absoluteX;
+  float absoluteY;
+
   vector<float> vectorCoordinatesX;
   vector<float> vectorCoordinatesY;
 
-  float absoluteX;
-  float absoluteY;
   string numberStr = "";
 
   for (int i = 0; i < pString.length(); i++)
@@ -134,22 +134,19 @@ void extractCoordinate(string pString){
     }
   }
 
-  cout << absoluteX << "/" << absoluteY << endl;
-  cout << vectorCoordinatesX.size() << "/" << vectorCoordinatesY.size() << endl;
-
   if(vectorCoordinatesX.size()!=0 && vectorCoordinatesY.size()!=0){    
 
     cout << "Maximo X,Y: " << *max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
     *max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
     cout << "Minimo X,Y: " << *min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
     *min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
-    
+
   }
 }
 
 void extractNodeData(xml_node<>* node){
-  coordinate X;
-  coordinate Y;
+  Coordinate X;
+  Coordinate Y;
   Range R;
   for (node = node->first_node(); node != NULL; node = node->next_sibling()){
     if (node->type() == node_element){
@@ -168,6 +165,5 @@ void extractNodeData(xml_node<>* node){
     }
   }
 }
-
 
 #endif
