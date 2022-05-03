@@ -2,6 +2,9 @@
 #ifndef _COORDINATE_
 #define _COORDINATE_ 0
 
+#include <iostream>
+using namespace std;
+
 class Coordinate{
 
     private:
@@ -9,14 +12,14 @@ class Coordinate{
         float Y;
 
     public:
-
+    
         //Constructor
+        Coordinate(){};
 
-         Coordinate( int pX,  int pY){
+         Coordinate( float pX,  float pY){
              X = pX;
              Y = pY;
         }
-
         //Setters
 
         void setX(float pX) {

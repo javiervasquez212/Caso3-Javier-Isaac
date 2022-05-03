@@ -153,8 +153,9 @@ void extractCoordinate(string pString, PathData &pDataPath){
     cout << "Minimo X,Y: " << *min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
     *min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
 
-    Coordinate absoluteCoordinate(absoluteX,absoluteY);
 
+
+    Coordinate absoluteCoordinate(absoluteX,absoluteY);
     Coordinate minCoordinates(*min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()),*min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()));
     Coordinate maxCoordinate(*max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()),*max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()));
     
@@ -167,18 +168,21 @@ void extractCoordinate(string pString, PathData &pDataPath){
 void extractNodeData(xml_node<>* node){
 
   for (node = node->first_node(); node != NULL; node = node->next_sibling()){
-    PathData *auxPathObject;
+
+    PathData* auxPath;
+    auxPath = new PathData();
+
     if (node->type() == node_element){
       if((string)node->name() == "path"){
         for (xml_attribute<>* attrib = node->first_attribute(); attrib != NULL; attrib = attrib->next_attribute()){
           if((string)attrib->name() == "d"){
-            extractCoordinate((string)attrib->value(),*auxPathObject);
+            extractCoordinate((string)attrib->value(), *auxPath);
           }
           if((string)attrib->name() == "style"){
-            extractColor((string)attrib->value(),*auxPathObject);
+            extractColor((string)attrib->value(), *auxPath);
           }
         }
-        vectorData.push_back(auxPathObject);
+        vectorData.push_back(auxPath);
         cout << "----------" << endl;
       }
       extractNodeData(node);

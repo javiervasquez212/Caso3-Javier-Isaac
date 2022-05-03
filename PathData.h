@@ -21,6 +21,11 @@ class PathData{
 
     public:
 
+    float x;
+    float y;
+
+        PathData(){};
+            
         //Setters
 
         void setPathColor(string pColor){
