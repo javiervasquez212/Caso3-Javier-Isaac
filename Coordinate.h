@@ -2,13 +2,21 @@
 #ifndef _COORDINATE_
 #define _COORDINATE_ 0
 
-class coordinate{
+class Coordinate{
 
     private:
         float X;
         float Y;
 
     public:
+
+        //Constructor
+
+         Coordinate( int pX,  int pY){
+             X = pX;
+             Y = pY;
+        }
+
         //Setters
 
         void setX(float pX) {

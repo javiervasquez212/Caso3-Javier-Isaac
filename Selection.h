@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-#include "SVGData.h"
+#include "PathData.h"
 
 using namespace std;
 

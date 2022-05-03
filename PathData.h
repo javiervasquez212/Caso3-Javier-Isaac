@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdio.h>
 
+using namespace std;
+
 class PathData{
 
     private:
@@ -19,23 +21,23 @@ class PathData{
 
     public:
 
-        //Constructor
-
-        PathData(Coordinate pMin, Coordinate pMax, Range pColors){
-            MinCoordinate = pMin;
-            MaxCoordinate = pMax;
-            Colors = pColors;
-        }
-
         //Setters
 
-        void setMinCoordinate(float pX, float pY) {
-            MinCoordinate.setX(pX);
-            MinCoordinate.setY(pY);
+        void setPathColor(string pColor){
+            PathColor = pColor;
         }
-        void setMaxCoordinate(float pX, float pY) {
-            MaxCoordinate.setX(pX);
-            MaxCoordinate.setY(pY);
+        void setPathPoints(string pPoints){
+            PathPoints = pPoints;
+        }
+        void setAbsoluteCoordinate(Coordinate pAbsoluteCoordinate){
+            AbsoluteCoordinate = pAbsoluteCoordinate;
+        }
+        void setMinCoordinate(Coordinate pMinCoordinate) {
+
+            MinCoordinate = pMinCoordinate;
+        }
+        void setMaxCoordinate(Coordinate pMaxCoordinate) {
+            MaxCoordinate = pMaxCoordinate;
         }
         void setColors(Range pColors){
             Colors = pColors;
@@ -57,6 +59,12 @@ class PathData{
         }
         Range getColors(){
             return Colors;
+        }
+        string getPathColor(){
+            return PathColor;
+        }
+        string getPathPoints(){
+            return PathPoints;
         }
 };
 
