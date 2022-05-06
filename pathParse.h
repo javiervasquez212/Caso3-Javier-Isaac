@@ -2,6 +2,7 @@
 #ifndef _PATHPARSE_
 #define _PATHPARSE_ 0
 
+#include <algorithm>
 #include <iostream>
 #include <bits/stdc++.h>
 #include "rapidxml/rapidxml_ext.hpp"
@@ -11,6 +12,7 @@
 #include "Coordinate.h"
 #include "Range.h"
 #include "PathData.h"
+#include "Parameter.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -19,6 +21,7 @@ void extractXMLData(xml_document<>* doc);
 void extractNodeData(xml_node<>* node);
 
 vector<PathData*> vectorData;
+vector<PathData*> vectorSolution;
 
 int hexadecimalToDecimal(string pHexVal)
 {
@@ -58,30 +61,27 @@ void extractColor(string pString, PathData &pDataPath){
     }
     if(pString[i] ==';'){
 
-      cout << "Code color path: " << "0x"+color << endl;
-
       if(hexadecimalToDecimal(color)<=0x83FF00   && hexadecimalToDecimal(color)>=0x2700FF ){
-        cout<< "Range color: 0x83FF00 - 0x2700FF" << endl;
         auxRange.setStart(0x2700FF);
         auxRange.setEnd(0x83FF00);
         break;
       }
       if(hexadecimalToDecimal(color)<=0xFFFF00 && hexadecimalToDecimal(color)>=0xFF0000 ){
-        cout<< "Range color: 0xFFFF00 - 0xFF0000" << endl;
         auxRange.setStart(0xFF0000);
         auxRange.setEnd(0xFFFF00);
         break;
       }
       if(hexadecimalToDecimal(color)<=0xFF0000  && hexadecimalToDecimal(color)>=0x83FF00 ){
-        cout<< "Range color: 0xFF0000 - 0x83FF00" << endl;
         auxRange.setStart(0x83FF00);
         auxRange.setEnd(0xFF0000);
         break;
       }
       if(hexadecimalToDecimal(color)<=0xFFFF00  && hexadecimalToDecimal(color)>=0x83FF00 ){
-        cout<< "Range color: 0xFFFF00 - 0x83FF00" << endl;
         auxRange.setStart(0xFFFF00);
         auxRange.setEnd(0x83FF00);
+        break;
+      }
+      else{
         break;
       }
     }
@@ -148,13 +148,6 @@ void extractCoordinate(string pString, PathData &pDataPath){
 
   if(vectorCoordinatesX.size()!=0 && vectorCoordinatesY.size()!=0){    
 
-    cout << "Maximo X,Y: " << *max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
-    *max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
-    cout << "Minimo X,Y: " << *min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()) << " , " <<
-    *min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()) << endl;
-
-
-
     Coordinate absoluteCoordinate(absoluteX,absoluteY);
     Coordinate minCoordinates(*min_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()),*min_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()));
     Coordinate maxCoordinate(*max_element(vectorCoordinatesX.begin(), vectorCoordinatesX.end()),*max_element(vectorCoordinatesY.begin(), vectorCoordinatesY.end()));
@@ -162,6 +155,7 @@ void extractCoordinate(string pString, PathData &pDataPath){
     pDataPath.setAbsoluteCoordinate(absoluteCoordinate);
     pDataPath.setMaxCoordinate(maxCoordinate);
     pDataPath.setMinCoordinate(minCoordinates);
+    pDataPath.setPathPoints(pString);
   }
 }
 
@@ -183,11 +177,38 @@ void extractNodeData(xml_node<>* node){
           }
         }
         vectorData.push_back(auxPath);
-        cout << "----------" << endl;
       }
       extractNodeData(node);
     }
   }
+}
+
+void printDataPath(){
+
+  for(PathData *path : vectorData){
+    cout << "d: " << path->getPathPoints() << endl;
+    cout << "Color: " << path->getPathColor() << endl;
+    cout << "Max Coordinates: " << path->getMaxX() << "," << path->getMaxY() << endl;
+    cout << "Min Coordinates: " << path->getMinX() << "," << path->getMinY() << endl;
+    cout << "Range colors: " << path->getColors().getStart() << "-" << path->getColors().getEnd()<<endl;
+    cout << "---------------------"<<endl;
+  }
+}
+
+Parameter createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
+
+  Parameter arrayParameter[pArrayColorSize*pArrayPointSize];
+  int indexArray = 0;
+
+  for (int x = 0; x < pArrayPointSize; x++)
+  {
+    for (int y = 0; y < pArrayColorSize; y++)
+    {
+      arrayParameter[indexArray] = Parameter(pArrayPoint[x], pArrayColors[y]);
+      indexArray++;
+    }
+  }
+  return arrayParameter[pArrayColorSize*pArrayPointSize];
 }
 
 #endif
