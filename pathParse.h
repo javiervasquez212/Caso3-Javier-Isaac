@@ -22,6 +22,7 @@ void extractNodeData(xml_node<>* node);
 
 vector<PathData*> vectorData;
 vector<PathData*> vectorSolution;
+vector<Parameter*> vectorParameter;
 
 int hexadecimalToDecimal(string pHexVal)
 {
@@ -195,20 +196,36 @@ void printDataPath(){
   }
 }
 
-Parameter createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
-
-  Parameter arrayParameter[pArrayColorSize*pArrayPointSize];
-  int indexArray = 0;
+void createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
 
   for (int x = 0; x < pArrayPointSize; x++)
   {
     for (int y = 0; y < pArrayColorSize; y++)
     {
-      arrayParameter[indexArray] = Parameter(pArrayPoint[x], pArrayColors[y]);
-      indexArray++;
+      Parameter* auxParameter;
+      auxParameter = new Parameter(pArrayPoint[x], pArrayColors[y]);
+      vectorParameter.push_back(auxParameter);
     }
   }
-  return arrayParameter[pArrayColorSize*pArrayPointSize];
 }
+
+void match(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
+
+  createParameter(pArrayPoint,pArrayColors,pArrayPointSize,pArrayColorSize);
+
+  for(PathData *path : vectorData){
+    for(Parameter *parameter : vectorParameter){
+      if(parameter->getColor() <= path->getColors().getEnd() && parameter->getColor() >= path->getColors().getStart()){
+        if(parameter->getPoint().getX() <= path->getMaxX() && parameter->getPoint().getY() <= path->getMaxY() &&
+        parameter->getPoint().getY() >= path->getMinX() && parameter->getPoint().getY() >= path->getMinY()){
+          cout << "match" << endl;
+          vectorSolution.push_back(path);
+         }
+        }
+      }
+    }
+    std::sort(vectorSolution.begin(),vectorSolution.end());
+    vectorSolution.erase(std::unique(vectorSolution.begin(),vectorSolution.end()),vectorSolution.end());
+  }
 
 #endif
