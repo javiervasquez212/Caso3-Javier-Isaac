@@ -1,29 +1,31 @@
-#include <iostream>
-#include <string>
-#include "RouteMaker.h"
+#include "pathParse.h"
 
-using namespace std;
 
 int main(){
+    //Leer XML
+    file<> file("image.svg"); // Lee y carga el archivo en memoria
+    xml_document<> myDoc; //Raíz del árbol DOM
+    myDoc.parse<0>(file.data()); //Parsea el XML en un DOM
 
-    vector<Point> test;
+    //Recorrer elementos y atributos
+    extractNodeData(&myDoc);
+    Coordinate a1(100,200);
+    Coordinate a2(255,144);
+    Coordinate a3(300,70);
 
-    Point p1 = Point(10,20, "");
-    Point p2 = Point(50, 20, "");
-    Point p3 = Point(163, 225, "");
-    Point p4 = Point(422, 100, "");
-    Point p5 = Point(325, 10, "");
-    Point p6 = Point(333, 276, "");
+    Coordinate a4(150,250);
+    Coordinate a5(50,150);
+    Coordinate a6(-50,50);
 
-    test.push_back(p1);
-    /* test.push_back(p2);
-    test.push_back(p3);
-    test.push_back(p4);
-    test.push_back(p5);
-    test.push_back(p6); */
+    Coordinate arrayCoordinate[] = {a1,a2,a3,a4,a5,a6};
+    int arrayColor[] = {0x7DA367,0x57ABE7,0XFF6633,0x800080,0x996633,0x990099};
 
-    RouteMaker routes = RouteMaker();
-    routes.calculateRoutes(test);
+
+    match(arrayCoordinate, arrayColor,6,6);
+
+    
+
 
     return 0;
-};
+
+}
