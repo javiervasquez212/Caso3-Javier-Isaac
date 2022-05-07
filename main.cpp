@@ -16,11 +16,11 @@ int main(){
     Point p6 = Point(333, 276, "");
 
     test.push_back(p1);
-    test.push_back(p2);
+    /* test.push_back(p2);
     test.push_back(p3);
     test.push_back(p4);
     test.push_back(p5);
-    test.push_back(p6);
+    test.push_back(p6); */
 
     RouteMaker routes = RouteMaker();
     routes.calculateRoutes(test);

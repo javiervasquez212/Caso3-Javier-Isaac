@@ -74,17 +74,27 @@ Route RouteMaker::createRoute(Point pPoint, int pMovement){
 
     routeResult.addPoint(pPoint);
 
-    int angle = 90;
+    int angle = 110;
     bool line = randomLine();
 
     float radAngle = angle * PI / 180;
-    float xMovement = cos(radAngle)*pMovement;
-    float yMovement = sin(radAngle)*pMovement;
+
+    float xMovement;
+    float yMovement;
+
+    if(angle < 180){
+        xMovement = cos(radAngle)*pMovement;
+        yMovement = sin(radAngle)*pMovement;
+    }else{
+        xMovement = sin(radAngle)*pMovement;
+        yMovement = cos(radAngle)*pMovement;
+    }
+    
 
     int xTarget = pPoint.getPositionX() + xMovement;
     int yTarget = pPoint.getPositionY() + yMovement;
 
-    int steps = 10;
+    int steps = 30;
     int counter = 0;
 
     bool creatingRoute = true;
@@ -118,7 +128,7 @@ Point RouteMaker::createStep(Point pPoint, int pAngle, bool pLine, int xToMove, 
     int newY = pPoint.getPositionY() + yToMove;
     string newColor = pPoint.getColor();
     Point newPoint;
-
+    
     if(xTarget - newX > xToMove){
         if(yTarget - newY > yToMove){
             newPoint = Point(newX, newY, newColor);
@@ -133,9 +143,7 @@ Point RouteMaker::createStep(Point pPoint, int pAngle, bool pLine, int xToMove, 
         }
     }
 
-
     return newPoint;
-
 }
 
 //getters and setters
