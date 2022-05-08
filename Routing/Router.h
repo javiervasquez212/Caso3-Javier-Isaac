@@ -1,44 +1,46 @@
 #include <iostream>
 #include <string>
 #include <unistd.h>
-#include <stdio.h>  /* printf, scanf, puts, NULL */
 #include <stdlib.h> /* srand, rand */
 #include <time.h>
 #include <vector>
-#include <math.h>  
+#include <math.h>
 #include "Route.h"
+#include "Observer.h"
 #define PI 3.14159265358979323846
 using namespace std;
 
-class RouteMaker{
-    protected:
-        string observer;
-        vector<Route> routes;
-        int x= 800;
-        int y= 800;
-    public:
-        RouteMaker();
-        RouteMaker(string pObserver);
-        string getObserver();
-        bool randomLine();
-        void calculateRoutes(vector<Point> pData);
-        Route createRoute(Point pPoint, int pMovement);
-        Point createStep(Point pPoint, int pAngle, bool pLine, int xToMove, int yToMove, int xTarget, int yTarget);
-        int getX();
-        void setX(int pX);
-        int getY();
-        void setY(int pY);
+class Router : public Observer
+{
+protected:
+    vector<Route> routes;
+    int x = 800;
+    int y = 800;
+
+public:
+    Router();
+    Router(Subject pSubject);
+    bool randomLine();
+    void calculateRoutes(vector<Point> pData);
+    Route createRoute(Point pPoint, int pMovement);
+    Point createStep(Point pPoint, int pAngle, bool pLine, int xToMove, int yToMove, int xTarget, int yTarget);
+    int getX();
+    void setX(int pX);
+    int getY();
+    void setY(int pY);
+    void update();
 };
 
-RouteMaker::RouteMaker(){
-    observer = "";
+Router::Router()
+{
 }
 
-RouteMaker::RouteMaker(string pObserver){
-    observer = pObserver;
+Router::Router(Subject pSubject) : Observer(pSubject)
+{
 }
 
-bool RouteMaker::randomLine(){
+bool Router::randomLine()
+{
 
     int straightLineSelector;
     bool straightLine;
@@ -47,29 +49,36 @@ bool RouteMaker::randomLine(){
 
     straightLineSelector = rand() % 2;
 
-    if(straightLineSelector == 0){
+    if (straightLineSelector == 0)
+    {
         straightLine = true;
-    }else{
+    }
+    else
+    {
         straightLine = false;
     }
-    //cout << straightLine << endl;
+    // cout << straightLine << endl;
     return straightLine;
 }
 
-void RouteMaker::calculateRoutes(vector<Point> pData){
-    int movementSize = (this->x + this->y)/16;
-    for(int i = 0; i <pData.size(); i++){
+void Router::calculateRoutes(vector<Point> pData)
+{
+    int movementSize = (this->x + this->y) / 16;
+    for (int i = 0; i < pData.size(); i++)
+    {
         Point initial = pData[i];
         Route routeToAdd = createRoute(initial, movementSize);
         routes.push_back(routeToAdd);
     }
-    for(int j = 0; j <routes.size(); j++){
+    for (int j = 0; j < routes.size(); j++)
+    {
         Route initial = routes[j];
         initial.showInfo();
     }
 }
 
-Route RouteMaker::createRoute(Point pPoint, int pMovement){
+Route Router::createRoute(Point pPoint, int pMovement)
+{
     Route routeResult = Route();
 
     routeResult.addPoint(pPoint);
@@ -82,14 +91,16 @@ Route RouteMaker::createRoute(Point pPoint, int pMovement){
     float xMovement;
     float yMovement;
 
-    if(angle < 180){
-        xMovement = cos(radAngle)*pMovement;
-        yMovement = sin(radAngle)*pMovement;
-    }else{
-        xMovement = sin(radAngle)*pMovement;
-        yMovement = cos(radAngle)*pMovement;
+    if (angle < 180)
+    {
+        xMovement = cos(radAngle) * pMovement;
+        yMovement = sin(radAngle) * pMovement;
     }
-    
+    else
+    {
+        xMovement = sin(radAngle) * pMovement;
+        yMovement = cos(radAngle) * pMovement;
+    }
 
     int xTarget = pPoint.getPositionX() + xMovement;
     int yTarget = pPoint.getPositionY() + yMovement;
@@ -99,14 +110,15 @@ Route RouteMaker::createRoute(Point pPoint, int pMovement){
 
     bool creatingRoute = true;
 
-    int xToMove = ceil(xMovement/steps);
-    int yToMove = ceil(yMovement/steps);
+    int xToMove = ceil(xMovement / steps);
+    int yToMove = ceil(yMovement / steps);
 
     cout << "xMovement: " << xMovement << "yMovement: " << yMovement << endl;
     cout << "xtoMove: " << xToMove << "yToMove: " << yToMove << endl;
     cout << "xDestino: " << xTarget << "yDestino: " << yTarget << endl;
 
-    while(creatingRoute){
+    while (creatingRoute)
+    {
 
         Point temporaryPoint = routeResult.getLast();
 
@@ -114,55 +126,70 @@ Route RouteMaker::createRoute(Point pPoint, int pMovement){
 
         routeResult.addPoint(pointToAdd);
 
-        if(pointToAdd.getPositionX() == xTarget && pointToAdd.getPositionY() == yTarget){
+        if (pointToAdd.getPositionX() == xTarget && pointToAdd.getPositionY() == yTarget)
+        {
             creatingRoute = false;
         }
-    }  
+    }
 
     return routeResult;
 }
 
-Point RouteMaker::createStep(Point pPoint, int pAngle, bool pLine, int xToMove, int yToMove, int xTarget, int yTarget){
+Point Router::createStep(Point pPoint, int pAngle, bool pLine, int xToMove, int yToMove, int xTarget, int yTarget)
+{
 
     int newX = pPoint.getPositionX() + xToMove;
     int newY = pPoint.getPositionY() + yToMove;
     string newColor = pPoint.getColor();
     Point newPoint;
-    
-    if(xTarget - newX > xToMove){
-        if(yTarget - newY > yToMove){
+
+    if (xTarget - newX > xToMove)
+    {
+        if (yTarget - newY > yToMove)
+        {
             newPoint = Point(newX, newY, newColor);
-        }else{
+        }
+        else
+        {
             newPoint = Point(newX, yTarget, newColor);
         }
-    }else{
-        if(yTarget - newY > yToMove){
+    }
+    else
+    {
+        if (yTarget - newY > yToMove)
+        {
             newPoint = Point(xTarget, newY, newColor);
-        }else{
+        }
+        else
+        {
             newPoint = Point(xTarget, yTarget, newColor);
         }
     }
 
     return newPoint;
 }
+//===============UPDATE===================
+void Router::update()
+{
+}
 
-//getters and setters
-int RouteMaker::getX(){
+// getters and setters
+int Router::getX()
+{
     return this->x;
 }
 
-void RouteMaker::setX(int pX){
+void Router::setX(int pX)
+{
     this->x = pX;
 }
 
-int RouteMaker::getY(){
+int Router::getY()
+{
     return this->y;
 }
 
-void RouteMaker::setY(int pY){
+void Router::setY(int pY)
+{
     this->y = pY;
-}
-
-string RouteMaker::getObserver(){
-    return observer;
 }
