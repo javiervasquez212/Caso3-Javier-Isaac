@@ -1,20 +1,23 @@
+#ifndef _ROUTE_
+#define _ROUTE_ 0
+
 #include <string>
 #include <iostream>
 #include <vector>
-#include "Point.h"
+#include "Coordinate.h"
 
 using namespace std;
 
 class Route
 {
 protected:
-    vector<Point> animationSteps;
+    vector<Coordinate> animationSteps;
 
 public:
     Route();
-    vector<Point> getAnimationSteps();
-    void addPoint(Point pStep);
-    Point getLast();
+    vector<Coordinate> getAnimationSteps();
+    void addPoint(Coordinate pStep);
+    Coordinate getLast();
     void showInfo();
 };
 
@@ -22,17 +25,17 @@ Route::Route()
 {
 }
 
-vector<Point> Route::getAnimationSteps()
+vector<Coordinate> Route::getAnimationSteps()
 {
     return animationSteps;
 }
 
-void Route::addPoint(Point pStep)
+void Route::addPoint(Coordinate pStep)
 {
     animationSteps.push_back(pStep);
 }
 
-Point Route::getLast()
+Coordinate Route::getLast()
 {
     return animationSteps[animationSteps.size() - 1];
 }
@@ -42,8 +45,10 @@ void Route::showInfo()
     cout << "===========RUTA===========" << endl;
     for (int i = 0; i < animationSteps.size(); i++)
     {
-        cout << "( " << animationSteps[i].getPositionX() << ", " << animationSteps[i].getPositionY() << ")" << endl;
+        cout << "( " << animationSteps[i].getX() << ", " << animationSteps[i].getY() << ")" << endl;
     }
     cout << "Size of the route: " << animationSteps.size() << endl;
     cout << "==========================" << endl;
 }
+
+#endif

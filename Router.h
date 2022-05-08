@@ -1,3 +1,6 @@
+#ifndef _ROUTER_
+#define _ROUTER_ 0
+
 #include <iostream>
 #include <string>
 #include <unistd.h>
@@ -6,11 +9,10 @@
 #include <vector>
 #include <math.h>
 #include "Route.h"
-#include "Observer.h"
 #define PI 3.14159265358979323846
 using namespace std;
 
-class Router : public Observer
+class Router
 {
 protected:
     vector<Route> routes;
@@ -19,11 +21,10 @@ protected:
 
 public:
     Router();
-    Router(Subject pSubject);
     bool randomLine();
-    void calculateRoutes(vector<Point> pData);
-    Route createRoute(Point pPoint, int pMovement);
-    Point createStep(Point pPoint, int pAngle, bool pLine, int xToMove, int yToMove, int xTarget, int yTarget);
+    void calculateRoutes(vector<Coordinate> pData);
+    Route createRoute(Coordinate pPoint, int pMovement);
+    Coordinate createStep(Coordinate pPoint, bool pLine, float xToMove, float yToMove, float xTarget, float yTarget);
     int getX();
     void setX(int pX);
     int getY();
@@ -32,10 +33,6 @@ public:
 };
 
 Router::Router()
-{
-}
-
-Router::Router(Subject pSubject) : Observer(pSubject)
 {
 }
 
@@ -61,12 +58,12 @@ bool Router::randomLine()
     return straightLine;
 }
 
-void Router::calculateRoutes(vector<Point> pData)
+void Router::calculateRoutes(vector<Coordinate> pData)
 {
     int movementSize = (this->x + this->y) / 16;
     for (int i = 0; i < pData.size(); i++)
     {
-        Point initial = pData[i];
+        Coordinate initial = pData[i];
         Route routeToAdd = createRoute(initial, movementSize);
         routes.push_back(routeToAdd);
     }
@@ -77,7 +74,7 @@ void Router::calculateRoutes(vector<Point> pData)
     }
 }
 
-Route Router::createRoute(Point pPoint, int pMovement)
+Route Router::createRoute(Coordinate pPoint, int pMovement)
 {
     Route routeResult = Route();
 
@@ -88,83 +85,51 @@ Route Router::createRoute(Point pPoint, int pMovement)
 
     float radAngle = angle * PI / 180;
 
-    float xMovement;
-    float yMovement;
+    float xMovement = cos(radAngle) * pMovement;
+    float yMovement = sin(radAngle) * pMovement;
 
-    if (angle < 180)
-    {
-        xMovement = cos(radAngle) * pMovement;
-        yMovement = sin(radAngle) * pMovement;
-    }
-    else
-    {
-        xMovement = sin(radAngle) * pMovement;
-        yMovement = cos(radAngle) * pMovement;
-    }
-
-    int xTarget = pPoint.getPositionX() + xMovement;
-    int yTarget = pPoint.getPositionY() + yMovement;
+    float xTarget = pPoint.getX() + xMovement;
+    float yTarget = pPoint.getY() + yMovement;
 
     int steps = 30;
     int counter = 0;
 
     bool creatingRoute = true;
 
-    int xToMove = ceil(xMovement / steps);
-    int yToMove = ceil(yMovement / steps);
+    float xToMove = xMovement / steps;
+    float yToMove = yMovement / steps;
 
     cout << "xMovement: " << xMovement << "yMovement: " << yMovement << endl;
     cout << "xtoMove: " << xToMove << "yToMove: " << yToMove << endl;
     cout << "xDestino: " << xTarget << "yDestino: " << yTarget << endl;
+    cout << "================================"<< endl;
 
-    while (creatingRoute)
+    while (counter < steps)
     {
 
-        Point temporaryPoint = routeResult.getLast();
+        Coordinate temporaryPoint = routeResult.getLast();
 
-        Point pointToAdd = createStep(temporaryPoint, angle, line, xToMove, yToMove, xTarget, yTarget);
+        Coordinate pointToAdd = createStep(temporaryPoint, line, xToMove, yToMove, xTarget, yTarget);
 
         routeResult.addPoint(pointToAdd);
 
-        if (pointToAdd.getPositionX() == xTarget && pointToAdd.getPositionY() == yTarget)
+        /* if (pointToAdd.getPositionX() - xTarget < 1 && pointToAdd.getPositionY() - yTarget < 1)
         {
             creatingRoute = false;
-        }
+        } */
+        counter++;
     }
 
     return routeResult;
 }
 
-Point Router::createStep(Point pPoint, int pAngle, bool pLine, int xToMove, int yToMove, int xTarget, int yTarget)
+Coordinate Router::createStep(Coordinate pPoint, bool pLine, float xToMove, float yToMove, float xTarget, float yTarget)
 {
+    float newX = pPoint.getX() + xToMove;
+    float newY = pPoint.getY() + yToMove;
+    Coordinate newPoint;
 
-    int newX = pPoint.getPositionX() + xToMove;
-    int newY = pPoint.getPositionY() + yToMove;
-    string newColor = pPoint.getColor();
-    Point newPoint;
-
-    if (xTarget - newX > xToMove)
-    {
-        if (yTarget - newY > yToMove)
-        {
-            newPoint = Point(newX, newY, newColor);
-        }
-        else
-        {
-            newPoint = Point(newX, yTarget, newColor);
-        }
-    }
-    else
-    {
-        if (yTarget - newY > yToMove)
-        {
-            newPoint = Point(xTarget, newY, newColor);
-        }
-        else
-        {
-            newPoint = Point(xTarget, yTarget, newColor);
-        }
-    }
+    newPoint = Coordinate(newX, newY);
 
     return newPoint;
 }
@@ -193,3 +158,5 @@ void Router::setY(int pY)
 {
     this->y = pY;
 }
+
+#endif

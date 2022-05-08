@@ -4,21 +4,18 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "Subject.h"
 #include "pathParse.h"
 
 using namespace std;
 
-class Selection : public Subject
+class Selection
 {
 protected:
-    Observer observer;
 
 public:
     Selection();
     void startSelection();
     void notify();
-    void setObserver(Observer pObserver);
 };
 
 Selection::Selection()
@@ -60,11 +57,6 @@ void Selection::startSelection()
     // Llamamos la función Selection
 
     selection(vectorData, vectorParameter);
-}
-
-void Selection::setObserver(Observer pObserver)
-{
-    this->observer = pObserver;
 }
 
 void Selection::notify()
