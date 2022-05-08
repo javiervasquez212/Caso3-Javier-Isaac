@@ -43,7 +43,7 @@ int hexadecimalToDecimal(string pHexVal)
     return dec_val;
 }
 
-void extractColor(string pString, PathData &pDataPath){
+void extractColorPath(string pString, PathData &pDataPath){
 
   Range auxRange;
   string color = "";
@@ -92,7 +92,7 @@ void extractColor(string pString, PathData &pDataPath){
   pDataPath.setPathColor(color);
 }
 
-void extractCoordinate(string pString, PathData &pDataPath){
+void extractCoordinatePath(string pString, PathData &pDataPath){
 
   int flagX = 0;
   int flagY = 0;
@@ -171,10 +171,10 @@ void extractNodeData(xml_node<>* node){
       if((string)node->name() == "path"){
         for (xml_attribute<>* attrib = node->first_attribute(); attrib != NULL; attrib = attrib->next_attribute()){
           if((string)attrib->name() == "d"){
-            extractCoordinate((string)attrib->value(), *auxPath);
+            extractCoordinatePath((string)attrib->value(), *auxPath);
           }
           if((string)attrib->name() == "style"){
-            extractColor((string)attrib->value(), *auxPath);
+            extractColorPath((string)attrib->value(), *auxPath);
           }
         }
         vectorData.push_back(auxPath);
@@ -184,7 +184,71 @@ void extractNodeData(xml_node<>* node){
   }
 }
 
-void printDataPath(){
+vector<Parameter*> createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
+
+  for (int x = 0; x < pArrayPointSize; x++)
+  {
+    for (int y = 0; y < pArrayColorSize; y++)
+    {
+      Parameter* auxParameter;
+      auxParameter = new Parameter(pArrayPoint[x], pArrayColors[y]);
+      vectorParameter.push_back(auxParameter);
+    }
+  }
+  return vectorParameter;
+}
+  bool RecursiveSelection(PathData *pPath, vector<Parameter*> pParameterVector){
+
+  if(pParameterVector.size() == 0){
+    return false;
+    }
+  else if(pParameterVector.size() == 1){
+    Parameter *element = pParameterVector[0];
+    if(pPath->getMinX()<= element->getPoint().getX() && pPath->getMaxX()>= element->getPoint().getX() &&
+       pPath->getMinY()<= element->getPoint().getY() && pPath->getMaxY()>= element->getPoint().getY() &&
+       pPath->getColors().getStart() <= element->getColor() && pPath->getColors().getEnd() >= element->getColor()){
+      return true;
+      }
+    else{
+      return false;
+      }
+    }
+  else{
+
+    int middleIndex = pParameterVector.size()/2;
+    Parameter *middleParameter = pParameterVector[middleIndex];
+
+    if(pPath->getMinX()<= middleParameter->getPoint().getX() && pPath->getMaxX()>= middleParameter->getPoint().getX() &&
+       pPath->getMinY()<= middleParameter->getPoint().getY() && pPath->getMaxY()>= middleParameter->getPoint().getY() &&
+       pPath->getColors().getStart() <= middleParameter->getColor() && pPath->getColors().getEnd() >= middleParameter->getColor()){
+         return true;
+         }
+    else{
+      vector<Parameter*> firstHalveParameterVector(pParameterVector.begin(), pParameterVector.begin() + middleIndex);
+      vector<Parameter*> SecondHalveParameterVector(pParameterVector.begin() + middleIndex, pParameterVector.end());
+      if(RecursiveSelection(pPath,firstHalveParameterVector) || RecursiveSelection(pPath,SecondHalveParameterVector)){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+  }
+}
+
+vector<PathData*> Selection(vector<PathData*> pPathVector, vector<Parameter*> pParameterVector){
+
+  cout << pPathVector.size() << endl;
+   for(PathData *path : pPathVector){ 
+     if(RecursiveSelection(path, pParameterVector)){
+       vectorSolution.push_back(path);
+     }
+   }
+   cout << vectorSolution.size() << endl;
+   return vectorSolution;
+}
+
+void PrintVectorPathsData(){
 
   for(PathData *path : vectorData){
     cout << "d: " << path->getPathPoints() << endl;
@@ -196,30 +260,15 @@ void printDataPath(){
   }
 }
 
-void createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
-
-  for (int x = 0; x < pArrayPointSize; x++)
-  {
-    for (int y = 0; y < pArrayColorSize; y++)
-    {
-      Parameter* auxParameter;
-      auxParameter = new Parameter(pArrayPoint[x], pArrayColors[y]);
-      vectorParameter.push_back(auxParameter);
-    }
-  }
-}
-
-vector<PathData*> match(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
+/*vector<PathData*> match(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
 
   createParameter(pArrayPoint,pArrayColors,pArrayPointSize,pArrayColorSize);
 
   for(PathData *path : vectorData){
     for(Parameter *parameter : vectorParameter){
-
       if(parameter->getColor() <= path->getColors().getEnd() && parameter->getColor() >= path->getColors().getStart()){
         if(parameter->getPoint().getX() <= path->getMaxX() && parameter->getPoint().getY() <= path->getMaxY() &&
         parameter->getPoint().getY() >= path->getMinX() && parameter->getPoint().getY() >= path->getMinY()){
-          cout << "match" << endl;
           vectorSolution.push_back(path);
          }
         }
@@ -229,6 +278,6 @@ vector<PathData*> match(Coordinate pArrayPoint[], int pArrayColors[], int pArray
     vectorSolution.erase(std::unique(vectorSolution.begin(),vectorSolution.end()),vectorSolution.end());
 
     return vectorSolution;
-  }
+  }*/
 
 #endif
