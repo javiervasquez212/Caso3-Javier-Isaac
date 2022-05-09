@@ -16,9 +16,6 @@
 using namespace std;
 using namespace rapidxml;
 
-void extractXMLData(xml_document<>* doc);
-void extractNodeData(xml_node<>* node);
-
 vector<PathData*> vectorData;
 vector<PathData*> vectorSolution;
 vector<Parameter*> vectorParameter;
@@ -89,6 +86,7 @@ void extractColorPath(string pString, PathData &pDataPath){ // Extract Color fro
 
   pDataPath.setColors(auxRange);
   pDataPath.setPathColor(color);
+
 }
 
 void extractCoordinatePath(string pString, PathData &pDataPath){ //Extract Coordinates from each Path
@@ -110,12 +108,10 @@ void extractCoordinatePath(string pString, PathData &pDataPath){ //Extract Coord
         numberStr += pString[i];
     }
     else if(pString[i] == ','){
-
       if(flagX !=0){
-      
-      vectorCoordinatesX.push_back(std::stof(numberStr)+absoluteX);
-      numberStr += pString[i];
-      numberStr = "";
+        vectorCoordinatesX.push_back(std::stof(numberStr)+absoluteX);
+        numberStr += pString[i];
+        numberStr = "";
       }
       else{
         absoluteX = std::stof(numberStr);
@@ -145,7 +141,6 @@ void extractCoordinatePath(string pString, PathData &pDataPath){ //Extract Coord
         }
     }
   }
-
   if(vectorCoordinatesX.size()!=0 && vectorCoordinatesY.size()!=0){    
 
     Coordinate absoluteCoordinate(absoluteX,absoluteY);
@@ -196,8 +191,9 @@ vector<Parameter*> createParameter(Coordinate pArrayPoint[], int pArrayColors[],
   }
   return vectorParameter;
 }
-  bool RecursiveSelection(PathData *pPath, vector<Parameter*> pParameterVector){
 
+bool RecursiveSelection(PathData *pPath, vector<Parameter*> pParameterVector){
+  
   if(pParameterVector.size() == 0){
     return false;
     }
@@ -236,8 +232,6 @@ vector<Parameter*> createParameter(Coordinate pArrayPoint[], int pArrayColors[],
 }
 
 vector<PathData*> Selection(vector<PathData*> pPathVector, vector<Parameter*> pParameterVector){ //Main Selection Function
-
-  cout << pPathVector.size() << endl;
    for(PathData *path : pPathVector){ 
      if(RecursiveSelection(path, pParameterVector)){
        vectorSolution.push_back(path);

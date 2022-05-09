@@ -8,12 +8,14 @@ using namespace std;
 class Coordinate{
 
     private:
+    
         float x;
         float y;
 
     public:
     
         //Constructor
+
         Coordinate(){};
 
          Coordinate( float pX,  float pY){

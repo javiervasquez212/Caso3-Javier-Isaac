@@ -4,6 +4,7 @@
 class Range{
 
     private:
+    
         int start;
         int end;
 

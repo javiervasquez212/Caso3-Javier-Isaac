@@ -9,10 +9,13 @@ using namespace std;
 class Parameter{
 
     private:
+    
         Coordinate point;
         int color;
 
     public:
+
+        //Constructor
 
         Parameter(){};
 

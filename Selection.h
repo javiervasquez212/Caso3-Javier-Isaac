@@ -6,14 +6,5 @@
 
 using namespace std;
 
-/*vector<SVGData> vectorData;
-
-vector<SVGData> svgDataGenerator(){
-
-}
-
-vector<SVGData> svgDataSelecter(coordinate pArrayCoordinate[], string pArrayColors[]){
-
-}*/
 
 

@@ -24,6 +24,8 @@ class PathData{
     float x;
     float y;
 
+        //Constructor
+
         PathData(){};
             
         //Setters
