@@ -19,6 +19,7 @@ using namespace rapidxml;
 vector<PathData*> vectorData;
 vector<PathData*> vectorSolution;
 vector<Parameter*> vectorParameter;
+Coordinate sizeSVG;
 
 int hexadecimalToDecimal(string pHexVal)
 {
@@ -157,11 +158,19 @@ void extractCoordinatePath(string pString, PathData &pDataPath){ //Extract Coord
 void extractNodeData(xml_node<>* node){ // Parse SVG and push elements in vectorData
 
   for (node = node->first_node(); node != NULL; node = node->next_sibling()){
-
     PathData* auxPath;
     auxPath = new PathData();
-
     if (node->type() == node_element){
+      if((string)node->name() == "svg"){
+        for (xml_attribute<>* attrib = node->first_attribute(); attrib != NULL; attrib = attrib->next_attribute()){
+          if((string)attrib->name() == "width"){
+            sizeSVG.setX(std::stof(attrib->value()));
+          }
+          if((string)attrib->name() == "height"){
+            sizeSVG.setY(std::stof(attrib->value()));
+          }
+        }
+      }
       if((string)node->name() == "path"){
         for (xml_attribute<>* attrib = node->first_attribute(); attrib != NULL; attrib = attrib->next_attribute()){
           if((string)attrib->name() == "d"){
