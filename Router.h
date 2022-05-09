@@ -22,13 +22,16 @@ Global Optimum = the whole route created
 Stages = each time the function createStep is called we create a step based on the previous one in order to find the points
 */
 
+//This class works as an observer but also as a subject
+
 class Router : public MyObserver, public MySubject
 {
 protected:
     vector<PathData *> data;
-    int x = 800;
-    int y = 800;
+    int x = 0;
+    int y = 0;
     Selection * subject;
+    int angle;
 
 public:
     Router();
@@ -43,6 +46,8 @@ public:
     void setSubject(Selection * pSubject);
     void update();
     vector<PathData *> getData();
+    void setAngle(int pAngle);
+    
 };
 
 //Constructor
@@ -50,6 +55,8 @@ Router::Router() : MyObserver()
 {
 }
 
+
+//====================Main Methods ===================================
 
 //Function that generates a random bool to either create a curve line or a straight line
 bool Router::randomLine()
@@ -73,13 +80,12 @@ bool Router::randomLine()
     return straightLine;
 }
 
-//====================Main Methods ===================================
-
 /* Function that recieves all the data from the Selection process and then starts adding the route to each path
 It also calculates how much pixels the paths are going to be moved */
 void Router::calculateRoutes(vector<PathData *> pData)
 {
     int movementSize = (this->x + this->y) / 10;
+
     for (int pathIndex = 0; pathIndex < pData.size(); pathIndex++)
     {
         PathData *pathRouted = pData[pathIndex];
@@ -99,13 +105,14 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
 {
     Route routeResult = Route();
     routeResult.addPoint(pPoint);
-    int angle = 230;
-    bool line = randomLine();
+    bool line = randomLine(); //Is not being used
     float radAngle = angle * PI / 180;
     float xMovement = cos(radAngle) * pMovement;
     float yMovement = sin(radAngle) * pMovement;
     float xTarget = pPoint.getX() + xMovement;
     float yTarget = pPoint.getY() + yMovement;
+    int steps = 25; //AKA as Frames
+    int stepsCompleted = 0;
 
     if (xTarget > this->x)
     {
@@ -131,13 +138,11 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
         yMovement = -1 * pPoint.getY();
     }
 
-    int steps = 25; //AKA as Frames
-    int stepsCompleted = 0;
-
     float xToMove = xMovement / steps;
     float yToMove = yMovement / steps;
     float xyToMove = sqrt(pow(xToMove, 2) + pow(yToMove, 2));
     int newSteps;
+    int jumpStepSize = 0;
 
     if (xyToMove < 5)
     {
@@ -145,9 +150,9 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
         xToMove = xToMove * multiplier;
         yToMove = yToMove * multiplier;
         newSteps = xMovement / xToMove;
+        jumpStepSize = (steps / newSteps) - 1;
     }
 
-    int jumpStepSize = (steps / newSteps) - 1;
     int remainingStepsToJump = jumpStepSize;
 
     while (stepsCompleted < steps)
@@ -211,9 +216,9 @@ void Router::update()
 {
     this->setX(this->subject->getSizeX());
     this->setY(this->subject->getSizeY());
-    this->data = this->subject->getPathList();
+    this->data = this->subject->getVectorSolution();
     calculateRoutes(data);
-
+    this->notify();
 }
 
 //=================Getters and Setters ========================================
@@ -244,6 +249,10 @@ void Router::setSubject(Selection * pSubject)
 
 vector<PathData *> Router::getData(){
     return this->data;
+}
+
+void Router::setAngle(int pAngle){
+    this->angle = pAngle;
 }
 
 #endif

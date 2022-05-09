@@ -8,6 +8,10 @@
 
 using namespace std;
 
+/*
+Class that stores the coordinates of the route to follow
+*/
+
 class Route
 {
 protected:
@@ -19,6 +23,7 @@ public:
     void addPoint(Coordinate pStep);
     Coordinate getLast();
     void showInfo();
+    int size();
 };
 
 Route::Route()
@@ -49,6 +54,10 @@ void Route::showInfo()
     }
     cout << "Size of the route: " << animationSteps.size() << endl;
     cout << "==========================" << endl;
+}
+
+int Route::size(){
+    return this->animationSteps.size();
 }
 
 #endif

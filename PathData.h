@@ -20,6 +20,8 @@ private:
     string pathColor;
     string pathPoints;
     Route route;
+    vector<float> vectorCoordinatesX;
+    vector<float> vectorCoordinatesY;
 
 public:
     float x;
@@ -29,6 +31,12 @@ public:
 
     // Setters
 
+    void setVectorX(vector<float> pVectorX){
+        this->vectorCoordinatesX = pVectorX;
+    }
+    void setVectorY(vector<float> pVectorY){
+        this->vectorCoordinatesY = pVectorY;
+    }
     void setPathColor(string pColor)
     {
         pathColor = pColor;
@@ -43,7 +51,6 @@ public:
     }
     void setMinCoordinate(Coordinate pMinCoordinate)
     {
-
         minCoordinate = pMinCoordinate;
     }
     void setMaxCoordinate(Coordinate pMaxCoordinate)
@@ -56,6 +63,13 @@ public:
     }
 
     // Getters
+
+    vector<float> getVectorX(){
+        return this->vectorCoordinatesX;
+    }
+    vector<float> getVectorY(){
+        return this->vectorCoordinatesY;
+    }
 
     float getMinX()
     {
