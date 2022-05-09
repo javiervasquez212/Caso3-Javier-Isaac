@@ -86,10 +86,12 @@ public:
     {
         return pathPoints;
     }
-    Route getRoute(){
+    Route getRoute()
+    {
         return route;
     }
-    void setRoute(Route pRoute){
+    void setRoute(Route pRoute)
+    {
         this->route = pRoute;
     }
 };

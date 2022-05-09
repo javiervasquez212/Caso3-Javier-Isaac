@@ -78,7 +78,7 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
 {
     Route routeResult = Route();
     routeResult.addPoint(pPoint);
-    int angle = 60;
+    int angle = 230;
     bool line = randomLine();
     float radAngle = angle * PI / 180;
     float xMovement = cos(radAngle) * pMovement;
@@ -116,12 +116,11 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
     float xToMove = xMovement / steps;
     float yToMove = yMovement / steps;
     float xyToMove = sqrt(pow(xToMove, 2) + pow(yToMove, 2));
-    float multiplier;
     int newSteps;
 
     if (xyToMove < 5)
     {
-        multiplier = 5 / xyToMove;
+        float multiplier = 5 / xyToMove;
         xToMove = xToMove * multiplier;
         yToMove = yToMove * multiplier;
         newSteps = xMovement / xToMove;
@@ -129,11 +128,6 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
 
     int jumpCounter = (steps / newSteps) - 1;
     int jumpCounterAux = jumpCounter;
-
-    cout << "xMovement: " << xMovement << "| yMovement: " << yMovement << endl;
-    cout << "xtoMove: " << xToMove << "| yToMove: " << yToMove << endl;
-    cout << "xDestino: " << xTarget << "| yDestino: " << yTarget << endl;
-    cout << "================================" << endl;
 
     while (counter < steps)
     {

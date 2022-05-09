@@ -11,7 +11,6 @@ using namespace std;
 class Selection
 {
 protected:
-
 public:
     Selection();
     void startSelection();
