@@ -9,33 +9,33 @@ using namespace std;
 class Parameter{
 
     private:
-        Coordinate Point;
-        int Color;
+        Coordinate point;
+        int color;
 
     public:
 
         Parameter(){};
 
         Parameter(Coordinate pPoint, int pColor){
-            Point = pPoint;
-            Color = pColor;
+            point = pPoint;
+            color = pColor;
         }
         //Setters
 
         void setPoints(Coordinate pPoint) {
-        Point = pPoint;
+        point = pPoint;
         }
         void setColor(int pColor) {
-        Color = pColor;
+        color = pColor;
         }
 
         //Getters
 
         Coordinate getPoint() {
-        return Point ;
+        return point ;
         }
         int getColor() {
-        return Color;
+        return color;
         }
 };
 

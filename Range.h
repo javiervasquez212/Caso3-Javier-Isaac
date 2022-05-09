@@ -4,26 +4,26 @@
 class Range{
 
     private:
-        int Start;
-        int End;
+        int start;
+        int end;
 
     public:
         //Setters
 
         void setStart(int pStart) {
-        Start = pStart;
+        start = pStart;
         }
         void setEnd(int pEnd) {
-        End = pEnd;
+        end = pEnd;
         }
 
         //Getters
 
         int getStart() {
-        return Start;
+        return start;
         }
         int getEnd() {
-        return End;
+        return end;
         }
 };
 

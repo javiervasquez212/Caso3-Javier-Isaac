@@ -8,7 +8,6 @@
 #include "rapidxml/rapidxml_ext.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
 #include <sstream>
-#include <fstream>
 #include "Coordinate.h"
 #include "Range.h"
 #include "PathData.h"
@@ -43,7 +42,7 @@ int hexadecimalToDecimal(string pHexVal)
     return dec_val;
 }
 
-void extractColorPath(string pString, PathData &pDataPath){
+void extractColorPath(string pString, PathData &pDataPath){ // Extract Color from each Path
 
   Range auxRange;
   string color = "";
@@ -92,7 +91,7 @@ void extractColorPath(string pString, PathData &pDataPath){
   pDataPath.setPathColor(color);
 }
 
-void extractCoordinatePath(string pString, PathData &pDataPath){
+void extractCoordinatePath(string pString, PathData &pDataPath){ //Extract Coordinates from each Path
 
   int flagX = 0;
   int flagY = 0;
@@ -160,7 +159,7 @@ void extractCoordinatePath(string pString, PathData &pDataPath){
   }
 }
 
-void extractNodeData(xml_node<>* node){
+void extractNodeData(xml_node<>* node){ // Parse SVG and push elements in vectorData
 
   for (node = node->first_node(); node != NULL; node = node->next_sibling()){
 
@@ -184,7 +183,7 @@ void extractNodeData(xml_node<>* node){
   }
 }
 
-vector<Parameter*> createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
+vector<Parameter*> createParameter(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){ // Auxiliary recursive function
 
   for (int x = 0; x < pArrayPointSize; x++)
   {
@@ -236,7 +235,7 @@ vector<Parameter*> createParameter(Coordinate pArrayPoint[], int pArrayColors[],
   }
 }
 
-vector<PathData*> Selection(vector<PathData*> pPathVector, vector<Parameter*> pParameterVector){
+vector<PathData*> Selection(vector<PathData*> pPathVector, vector<Parameter*> pParameterVector){ //Main Selection Function
 
   cout << pPathVector.size() << endl;
    for(PathData *path : pPathVector){ 
@@ -244,11 +243,10 @@ vector<PathData*> Selection(vector<PathData*> pPathVector, vector<Parameter*> pP
        vectorSolution.push_back(path);
      }
    }
-   cout << vectorSolution.size() << endl;
    return vectorSolution;
 }
 
-void PrintVectorPathsData(){
+void PrintVectorPathsData(){ // Print attributes of elements in vectorData
 
   for(PathData *path : vectorData){
     cout << "d: " << path->getPathPoints() << endl;
@@ -259,25 +257,5 @@ void PrintVectorPathsData(){
     cout << "---------------------"<<endl;
   }
 }
-
-/*vector<PathData*> match(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
-
-  createParameter(pArrayPoint,pArrayColors,pArrayPointSize,pArrayColorSize);
-
-  for(PathData *path : vectorData){
-    for(Parameter *parameter : vectorParameter){
-      if(parameter->getColor() <= path->getColors().getEnd() && parameter->getColor() >= path->getColors().getStart()){
-        if(parameter->getPoint().getX() <= path->getMaxX() && parameter->getPoint().getY() <= path->getMaxY() &&
-        parameter->getPoint().getY() >= path->getMinX() && parameter->getPoint().getY() >= path->getMinY()){
-          vectorSolution.push_back(path);
-         }
-        }
-      }
-    }
-    std::sort(vectorSolution.begin(),vectorSolution.end());
-    vectorSolution.erase(std::unique(vectorSolution.begin(),vectorSolution.end()),vectorSolution.end());
-
-    return vectorSolution;
-  }*/
 
 #endif

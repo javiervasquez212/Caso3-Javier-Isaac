@@ -12,12 +12,12 @@ using namespace std;
 class PathData{
 
     private:
-        Coordinate MinCoordinate;
-        Coordinate MaxCoordinate;
-        Coordinate AbsoluteCoordinate;
-        Range Colors;
-        string PathColor;
-        string PathPoints;
+        Coordinate minCoordinate;
+        Coordinate maxCoordinate;
+        Coordinate absoluteCoordinate;
+        Range colors;
+        string pathColor;
+        string pathPoints;
 
     public:
 
@@ -29,47 +29,47 @@ class PathData{
         //Setters
 
         void setPathColor(string pColor){
-            PathColor = pColor;
+            pathColor = pColor;
         }
         void setPathPoints(string pPoints){
-            PathPoints = pPoints;
+            pathPoints = pPoints;
         }
         void setAbsoluteCoordinate(Coordinate pAbsoluteCoordinate){
-            AbsoluteCoordinate = pAbsoluteCoordinate;
+            absoluteCoordinate = pAbsoluteCoordinate;
         }
         void setMinCoordinate(Coordinate pMinCoordinate) {
 
-            MinCoordinate = pMinCoordinate;
+            minCoordinate = pMinCoordinate;
         }
         void setMaxCoordinate(Coordinate pMaxCoordinate) {
-            MaxCoordinate = pMaxCoordinate;
+            maxCoordinate = pMaxCoordinate;
         }
         void setColors(Range pColors){
-            Colors = pColors;
+            colors = pColors;
         }
 
         //Getters
 
         float getMinX() {
-        return MinCoordinate.getX();
+        return minCoordinate.getX();
         }
         float getMinY() {
-        return MinCoordinate.getY();
+        return minCoordinate.getY();
         }
         float getMaxX() {
-        return MaxCoordinate.getX();;
+        return maxCoordinate.getX();;
         }
         float getMaxY() {
-        return MaxCoordinate.getY();
+        return maxCoordinate.getY();
         }
         Range getColors(){
-            return Colors;
+            return colors;
         }
         string getPathColor(){
-            return PathColor;
+            return pathColor;
         }
         string getPathPoints(){
-            return PathPoints;
+            return pathPoints;
         }
 };
 

@@ -8,8 +8,8 @@ using namespace std;
 class Coordinate{
 
     private:
-        float X;
-        float Y;
+        float x;
+        float y;
 
     public:
     
@@ -17,25 +17,25 @@ class Coordinate{
         Coordinate(){};
 
          Coordinate( float pX,  float pY){
-             X = pX;
-             Y = pY;
+             x = pX;
+             y = pY;
         }
         //Setters
 
         void setX(float pX) {
-        X = pX;
+        x = pX;
         }
         void setY(float pY) {
-        Y = pY;
+        y = pY;
         }
 
         //Getters
 
         float getX() {
-        return X;
+        return x;
         }
         float getY() {
-        return Y;
+        return y;
         }
 };
 
