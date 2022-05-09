@@ -13,8 +13,8 @@ public:
     MySubject(/* args */);
     ~MySubject();
     MyObserver getObserver();
-    void setObserver(MyObserver pObserver);
-    void notify();
+    virtual void setObserver(MyObserver pObserver);
+    virtual void notify();
 };
 
 MySubject::MySubject(/* args */)

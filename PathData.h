@@ -70,6 +70,11 @@ public:
         return maxCoordinate.getX();
         ;
     }
+
+    Coordinate getAbsoluteCoordinate(){
+        return this->absoluteCoordinate;
+    }
+
     float getMaxY()
     {
         return maxCoordinate.getY();

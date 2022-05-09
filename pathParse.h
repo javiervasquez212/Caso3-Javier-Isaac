@@ -304,21 +304,4 @@ void PrintVectorPathsData()
   }
 }
 
-/*vector<PathData*> match(Coordinate pArrayPoint[], int pArrayColors[], int pArrayPointSize, int pArrayColorSize){
-  createParameter(pArrayPoint,pArrayColors,pArrayPointSize,pArrayColorSize);
-  for(PathData *path : vectorData){
-    for(Parameter *parameter : vectorParameter){
-      if(parameter->getColor() <= path->getColors().getEnd() && parameter->getColor() >= path->getColors().getStart()){
-        if(parameter->getPoint().getX() <= path->getMaxX() && parameter->getPoint().getY() <= path->getMaxY() &&
-        parameter->getPoint().getY() >= path->getMinX() && parameter->getPoint().getY() >= path->getMinY()){
-          vectorSolution.push_back(path);
-         }
-        }
-      }
-    }
-    std::sort(vectorSolution.begin(),vectorSolution.end());
-    vectorSolution.erase(std::unique(vectorSolution.begin(),vectorSolution.end()),vectorSolution.end());
-    return vectorSolution;
-  }*/
-
 #endif

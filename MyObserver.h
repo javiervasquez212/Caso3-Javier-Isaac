@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 class MyObserver
 {
 private:
@@ -21,6 +23,9 @@ MyObserver::~MyObserver()
 {
 }
 
+void MyObserver::update(){
+    cout << "Hice el update" << endl;
+}
 
 
 #endif

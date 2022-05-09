@@ -5,20 +5,34 @@
 #include <vector>
 #include <string>
 #include "pathParse.h"
+#include "MySubject.h"
+#include "PathData.h"
 
 using namespace std;
 
-class Selection
+class Selection : public MySubject
 {
 protected:
+    vector<PathData *> pathList;
+    int sizeX;
+    int sizeY;
+
 public:
     Selection();
     void startSelection();
-    void notify();
+    vector<PathData *> getPathList();
+    int getSizeX();
+    int getSizeY();
+    void setSizeY();
+    void setSizeX();
 };
 
 Selection::Selection()
 {
+}
+vector<PathData *> Selection::getPathList()
+{
+    return this->pathList;
 }
 
 void Selection::startSelection()
@@ -37,7 +51,6 @@ void Selection::startSelection()
     Coordinate a1(100, 200);
     Coordinate a2(255, 144);
     Coordinate a3(300, 70);
-
     Coordinate a4(150, 250);
     Coordinate a5(50, 150);
     Coordinate a6(-50, 50);
@@ -55,11 +68,19 @@ void Selection::startSelection()
 
     // Llamamos la función Selection
 
-    selection(vectorData, vectorParameter);
+    this->pathList = selection(vectorData, vectorParameter);
+
+    this->notify();
 }
 
-void Selection::notify()
+int Selection::getSizeX()
 {
+    return this->sizeX;
+}
+
+int Selection::getSizeY()
+{
+    return this->sizeY;
 }
 
 #endif

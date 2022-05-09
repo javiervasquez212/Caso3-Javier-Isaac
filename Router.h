@@ -9,31 +9,39 @@
 #include <vector>
 #include <math.h>
 #include "Route.h"
+#include "MySubject.h"
+#include "Selection.h"
 #define PI 3.14159265358979323846
 using namespace std;
 
-class Router
+class Router : public MyObserver 
 {
 protected:
-    vector<Route> routes;
+    vector<PathData *> data;
     int x = 800;
     int y = 800;
+    Selection subject;
 
 public:
     Router();
     bool randomLine();
-    void calculateRoutes(vector<Coordinate> pData);
+    void calculateRoutes(vector<PathData *> pData);
     Route createRoute(Coordinate pPoint, int pMovement);
     Coordinate createStep(Coordinate pPoint, float pXToMove, float pYToMove, float pXTarget, float pYTarget);
     int getX();
     void setX(int pX);
     int getY();
     void setY(int pY);
+    void setSubject(Selection pSubject);
     void update();
 };
 
-Router::Router()
+Router::Router() : MyObserver()
 {
+}
+
+void Router::setSubject(Selection pSubject){
+    this->subject = pSubject;
 }
 
 bool Router::randomLine()
@@ -58,19 +66,16 @@ bool Router::randomLine()
     return straightLine;
 }
 
-void Router::calculateRoutes(vector<Coordinate> pData)
+void Router::calculateRoutes(vector<PathData *> pData)
 {
     int movementSize = (this->x + this->y) / 10;
     for (int i = 0; i < pData.size(); i++)
     {
-        Coordinate initial = pData[i];
+        PathData * pathRouted = pData[i];
+        Coordinate initial = pathRouted->getAbsoluteCoordinate();
         Route routeToAdd = createRoute(initial, movementSize);
-        routes.push_back(routeToAdd);
-    }
-    for (int j = 0; j < routes.size(); j++)
-    {
-        Route initial = routes[j];
-        initial.showInfo();
+        pathRouted->setRoute(routeToAdd);
+        pathRouted->getRoute().showInfo();
     }
 }
 
@@ -180,9 +185,11 @@ Coordinate Router::createStep(Coordinate pPoint, float pXToMove, float pYToMove,
     return newPoint;
 }
 //===============UPDATE===================
-void Router::update()
-{
-}
+void Router::update(){
+        this->data = this->subject.getPathList();
+        calculateRoutes(data);
+        cout << "=============> entre aqui en el update de router" << endl;
+    }
 
 // getters and setters
 int Router::getX()
