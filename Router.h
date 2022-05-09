@@ -20,6 +20,8 @@ N = the number of pathData objects that Router recieve from selection
 Partial Optimum = each step created for each route
 Global Optimum = the whole route created
 Stages = each time the function createStep is called we create a step based on the previous one in order to find the points
+
+BigO = O(n)
 */
 
 //This class works as an observer but also as a subject
