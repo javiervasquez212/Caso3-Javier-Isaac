@@ -12,7 +12,7 @@ private:
 public:
     MyObserver(/* args */);
     ~MyObserver();
-    virtual void update();
+    virtual void update() = 0;
 };
 
 MyObserver::MyObserver(/* args */)
@@ -22,10 +22,5 @@ MyObserver::MyObserver(/* args */)
 MyObserver::~MyObserver()
 {
 }
-
-void MyObserver::update(){
-    cout << "Hice el update" << endl;
-}
-
 
 #endif

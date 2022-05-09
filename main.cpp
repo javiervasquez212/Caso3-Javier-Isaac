@@ -6,12 +6,11 @@ using namespace std;
 
 int main(){
 
-    Selection selecter = Selection();
-    Router router = Router();
-    selecter.setObserver(router);
-    router.setSubject(selecter);
-    selecter.startSelection();
-    router.calculateRoutes(selecter.getPathList());
+    Selection * selecter = new Selection();
+    Router * router = new Router();
+    router->setSubject(selecter);
+    selecter->setObserver(router);
+    selecter->startSelection();
 
     return 0;
 }

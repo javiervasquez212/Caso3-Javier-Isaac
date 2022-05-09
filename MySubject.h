@@ -8,12 +8,13 @@ using namespace std;
 class MySubject
 {
 private:
-    MyObserver observer;
+    MyObserver* observer;
+
 public:
     MySubject(/* args */);
     ~MySubject();
-    MyObserver getObserver();
-    virtual void setObserver(MyObserver pObserver);
+    MyObserver* getObserver();
+    void setObserver(MyObserver * pObserver);
     virtual void notify();
 };
 
@@ -25,16 +26,16 @@ MySubject::~MySubject()
 {
 }
 
-MyObserver MySubject::getObserver(){
+MyObserver * MySubject::getObserver(){
     return this->observer;
 }
 
-void MySubject::setObserver(MyObserver pObserver){
+void MySubject::setObserver(MyObserver * pObserver){
     this->observer = pObserver;
 }
 
 void MySubject::notify(){
-    this->observer.update();
+    this->observer->update();
 }
 
 

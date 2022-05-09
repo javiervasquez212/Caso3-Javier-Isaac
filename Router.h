@@ -14,13 +14,13 @@
 #define PI 3.14159265358979323846
 using namespace std;
 
-class Router : public MyObserver 
+class Router : public MyObserver
 {
 protected:
     vector<PathData *> data;
     int x = 800;
     int y = 800;
-    Selection subject;
+    Selection * subject;
 
 public:
     Router();
@@ -32,7 +32,7 @@ public:
     void setX(int pX);
     int getY();
     void setY(int pY);
-    void setSubject(Selection pSubject);
+    void setSubject(Selection * pSubject);
     void update();
 };
 
@@ -40,7 +40,8 @@ Router::Router() : MyObserver()
 {
 }
 
-void Router::setSubject(Selection pSubject){
+void Router::setSubject(Selection * pSubject)
+{
     this->subject = pSubject;
 }
 
@@ -71,7 +72,7 @@ void Router::calculateRoutes(vector<PathData *> pData)
     int movementSize = (this->x + this->y) / 10;
     for (int i = 0; i < pData.size(); i++)
     {
-        PathData * pathRouted = pData[i];
+        PathData *pathRouted = pData[i];
         Coordinate initial = pathRouted->getAbsoluteCoordinate();
         Route routeToAdd = createRoute(initial, movementSize);
         pathRouted->setRoute(routeToAdd);
@@ -185,11 +186,12 @@ Coordinate Router::createStep(Coordinate pPoint, float pXToMove, float pYToMove,
     return newPoint;
 }
 //===============UPDATE===================
-void Router::update(){
-        this->data = this->subject.getPathList();
-        calculateRoutes(data);
-        cout << "=============> entre aqui en el update de router" << endl;
-    }
+void Router::update()
+{
+    this->data = this->subject->getPathList();
+    calculateRoutes(data);
+    cout << "=============> entre aqui en el update de router" << endl;
+}
 
 // getters and setters
 int Router::getX()
