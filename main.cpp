@@ -6,7 +6,7 @@ using namespace std;
 int main(){
     vector<Coordinate> test;
 
-    Coordinate p1 = Coordinate(10,20);
+    Coordinate p1 = Coordinate(30,25);
     Coordinate p2 = Coordinate(50, 20);
     Coordinate p3 = Coordinate(163, 225);
     Coordinate p4 = Coordinate(422, 100);
@@ -22,5 +22,6 @@ int main(){
 
     Router routes = Router();
     routes.calculateRoutes(test);
+
     return 0;
 }

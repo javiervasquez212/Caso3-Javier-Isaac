@@ -24,7 +24,7 @@ public:
     bool randomLine();
     void calculateRoutes(vector<Coordinate> pData);
     Route createRoute(Coordinate pPoint, int pMovement);
-    Coordinate createStep(Coordinate pPoint, bool pLine, float xToMove, float yToMove, float xTarget, float yTarget);
+    Coordinate createStep(Coordinate pPoint, float pXToMove, float pYToMove, float pXTarget, float pYTarget);
     int getX();
     void setX(int pX);
     int getY();
@@ -60,7 +60,7 @@ bool Router::randomLine()
 
 void Router::calculateRoutes(vector<Coordinate> pData)
 {
-    int movementSize = (this->x + this->y) / 16;
+    int movementSize = (this->x + this->y) / 10;
     for (int i = 0; i < pData.size(); i++)
     {
         Coordinate initial = pData[i];
@@ -77,59 +77,111 @@ void Router::calculateRoutes(vector<Coordinate> pData)
 Route Router::createRoute(Coordinate pPoint, int pMovement)
 {
     Route routeResult = Route();
-
     routeResult.addPoint(pPoint);
-
-    int angle = 110;
+    int angle = 60;
     bool line = randomLine();
-
     float radAngle = angle * PI / 180;
-
     float xMovement = cos(radAngle) * pMovement;
     float yMovement = sin(radAngle) * pMovement;
-
     float xTarget = pPoint.getX() + xMovement;
     float yTarget = pPoint.getY() + yMovement;
 
-    int steps = 30;
-    int counter = 0;
+    if (xTarget > this->x)
+    {
+        xTarget = this->x;
+        xMovement = this->x - pPoint.getX();
+    }
 
-    bool creatingRoute = true;
+    if (yTarget > this->y)
+    {
+        yTarget = this->y;
+        yMovement = this->y - pPoint.getY();
+    }
+
+    if (xTarget <= 0)
+    {
+        xTarget = 0;
+        xMovement = -1 * pPoint.getX();
+    }
+
+    if (yTarget <= 0)
+    {
+        yTarget = 0;
+        yMovement = -1 * pPoint.getY();
+    }
+
+    int steps = 25;
+    int counter = 0;
 
     float xToMove = xMovement / steps;
     float yToMove = yMovement / steps;
+    float xyToMove = sqrt(pow(xToMove, 2) + pow(yToMove, 2));
+    float multiplier;
+    int newSteps;
 
-    cout << "xMovement: " << xMovement << "yMovement: " << yMovement << endl;
-    cout << "xtoMove: " << xToMove << "yToMove: " << yToMove << endl;
-    cout << "xDestino: " << xTarget << "yDestino: " << yTarget << endl;
-    cout << "================================"<< endl;
+    if (xyToMove < 5)
+    {
+        multiplier = 5 / xyToMove;
+        xToMove = xToMove * multiplier;
+        yToMove = yToMove * multiplier;
+        newSteps = xMovement / xToMove;
+    }
+
+    int jumpCounter = (steps / newSteps) - 1;
+    int jumpCounterAux = jumpCounter;
+
+    cout << "xMovement: " << xMovement << "| yMovement: " << yMovement << endl;
+    cout << "xtoMove: " << xToMove << "| yToMove: " << yToMove << endl;
+    cout << "xDestino: " << xTarget << "| yDestino: " << yTarget << endl;
+    cout << "================================" << endl;
 
     while (counter < steps)
     {
-
         Coordinate temporaryPoint = routeResult.getLast();
+        Coordinate pointToAdd;
 
-        Coordinate pointToAdd = createStep(temporaryPoint, line, xToMove, yToMove, xTarget, yTarget);
+        if (jumpCounterAux > 0)
+        {
+            pointToAdd = createStep(temporaryPoint, 0, 0, xTarget, yTarget);
+            jumpCounterAux--;
+        }
+        else
+        {
+            pointToAdd = createStep(temporaryPoint, xToMove, yToMove, xTarget, yTarget);
+            jumpCounterAux = jumpCounter;
+        }
 
         routeResult.addPoint(pointToAdd);
-
-        /* if (pointToAdd.getPositionX() - xTarget < 1 && pointToAdd.getPositionY() - yTarget < 1)
-        {
-            creatingRoute = false;
-        } */
         counter++;
     }
 
     return routeResult;
 }
 
-Coordinate Router::createStep(Coordinate pPoint, bool pLine, float xToMove, float yToMove, float xTarget, float yTarget)
+Coordinate Router::createStep(Coordinate pPoint, float pXToMove, float pYToMove, float pXTarget, float pYTarget)
 {
-    float newX = pPoint.getX() + xToMove;
-    float newY = pPoint.getY() + yToMove;
+    float newX = pPoint.getX() + pXToMove;
+    float newY = pPoint.getY() + pYToMove;
     Coordinate newPoint;
 
-    newPoint = Coordinate(newX, newY);
+    if ((pXToMove != 0) || (pYToMove != 0))
+    {
+        if (abs(newX - pXTarget) < 5)
+        {
+            newX = pXTarget;
+        }
+        if (abs(newY - pYTarget) < 5)
+        {
+            newY = pYTarget;
+        }
+
+        newPoint = Coordinate(newX, newY);
+    }
+
+    if ((pXToMove == 0) && (pYToMove == 0))
+    {
+        newPoint = pPoint;
+    }
 
     return newPoint;
 }
