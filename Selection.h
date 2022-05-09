@@ -23,8 +23,6 @@ public:
     vector<PathData *> getPathList();
     int getSizeX();
     int getSizeY();
-    void setSizeY();
-    void setSizeX();
 };
 
 Selection::Selection()
@@ -38,7 +36,7 @@ vector<PathData *> Selection::getPathList()
 void Selection::startSelection()
 {
     // Leer XML
-    file<> file("image.svg");    // Lee y carga el archivo en memoria
+    file<> file("Images/image.svg");    // Lee y carga el archivo en memoria
     xml_document<> myDoc;        // Raíz del árbol DOM
     myDoc.parse<0>(file.data()); // Parsea el XML en un DOM
 
@@ -69,6 +67,11 @@ void Selection::startSelection()
     // Llamamos la función Selection
 
     this->pathList = selection(vectorData, vectorParameter);
+
+    Coordinate size = getSizeSVG();
+
+    this->sizeX = size.getX();
+    this->sizeY = size.getY();
 
     this->notify();
 }

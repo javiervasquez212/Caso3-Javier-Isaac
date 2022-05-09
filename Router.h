@@ -14,7 +14,15 @@
 #define PI 3.14159265358979323846
 using namespace std;
 
-class Router : public MyObserver
+
+/*
+N = the number of pathData objects that Router recieve from selection
+Partial Optimum = each step created for each route
+Global Optimum = the whole route created
+Stages = each time the function createStep is called we create a step based on the previous one in order to find the points
+*/
+
+class Router : public MyObserver, public MySubject
 {
 protected:
     vector<PathData *> data;
@@ -34,17 +42,16 @@ public:
     void setY(int pY);
     void setSubject(Selection * pSubject);
     void update();
+    vector<PathData *> getData();
 };
 
+//Constructor
 Router::Router() : MyObserver()
 {
 }
 
-void Router::setSubject(Selection * pSubject)
-{
-    this->subject = pSubject;
-}
 
+//Function that generates a random bool to either create a curve line or a straight line
 bool Router::randomLine()
 {
 
@@ -63,16 +70,19 @@ bool Router::randomLine()
     {
         straightLine = false;
     }
-    // cout << straightLine << endl;
     return straightLine;
 }
 
+//====================Main Methods ===================================
+
+/* Function that recieves all the data from the Selection process and then starts adding the route to each path
+It also calculates how much pixels the paths are going to be moved */
 void Router::calculateRoutes(vector<PathData *> pData)
 {
     int movementSize = (this->x + this->y) / 10;
-    for (int i = 0; i < pData.size(); i++)
+    for (int pathIndex = 0; pathIndex < pData.size(); pathIndex++)
     {
-        PathData *pathRouted = pData[i];
+        PathData *pathRouted = pData[pathIndex];
         Coordinate initial = pathRouted->getAbsoluteCoordinate();
         Route routeToAdd = createRoute(initial, movementSize);
         pathRouted->setRoute(routeToAdd);
@@ -80,6 +90,11 @@ void Router::calculateRoutes(vector<PathData *> pData)
     }
 }
 
+/* 
+Recieves the amount of pixels to be moved and the initial point
+to start creating the route, calculating the exact destiny were the path
+will finish its route based on the angle
+ */ 
 Route Router::createRoute(Coordinate pPoint, int pMovement)
 {
     Route routeResult = Route();
@@ -116,8 +131,8 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
         yMovement = -1 * pPoint.getY();
     }
 
-    int steps = 25;
-    int counter = 0;
+    int steps = 25; //AKA as Frames
+    int stepsCompleted = 0;
 
     float xToMove = xMovement / steps;
     float yToMove = yMovement / steps;
@@ -132,32 +147,35 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
         newSteps = xMovement / xToMove;
     }
 
-    int jumpCounter = (steps / newSteps) - 1;
-    int jumpCounterAux = jumpCounter;
+    int jumpStepSize = (steps / newSteps) - 1;
+    int remainingStepsToJump = jumpStepSize;
 
-    while (counter < steps)
+    while (stepsCompleted < steps)
     {
         Coordinate temporaryPoint = routeResult.getLast();
         Coordinate pointToAdd;
 
-        if (jumpCounterAux > 0)
+        if (remainingStepsToJump > 0)
         {
             pointToAdd = createStep(temporaryPoint, 0, 0, xTarget, yTarget);
-            jumpCounterAux--;
+            remainingStepsToJump--;
         }
         else
         {
             pointToAdd = createStep(temporaryPoint, xToMove, yToMove, xTarget, yTarget);
-            jumpCounterAux = jumpCounter;
+            remainingStepsToJump = jumpStepSize;
         }
 
         routeResult.addPoint(pointToAdd);
-        counter++;
+        stepsCompleted++;
     }
 
     return routeResult;
 }
 
+/*
+Creates each step of the route based on the previous step
+*/
 Coordinate Router::createStep(Coordinate pPoint, float pXToMove, float pYToMove, float pXTarget, float pYTarget)
 {
     float newX = pPoint.getX() + pXToMove;
@@ -186,14 +204,19 @@ Coordinate Router::createStep(Coordinate pPoint, float pXToMove, float pYToMove,
     return newPoint;
 }
 //===============UPDATE===================
+/*
+Method Update from the observer
+*/
 void Router::update()
 {
+    this->setX(this->subject->getSizeX());
+    this->setY(this->subject->getSizeY());
     this->data = this->subject->getPathList();
     calculateRoutes(data);
-    cout << "=============> entre aqui en el update de router" << endl;
+
 }
 
-// getters and setters
+//=================Getters and Setters ========================================
 int Router::getX()
 {
     return this->x;
@@ -212,6 +235,15 @@ int Router::getY()
 void Router::setY(int pY)
 {
     this->y = pY;
+}
+
+void Router::setSubject(Selection * pSubject)
+{
+    this->subject = pSubject;
+}
+
+vector<PathData *> Router::getData(){
+    return this->data;
 }
 
 #endif
