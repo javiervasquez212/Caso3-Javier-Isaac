@@ -34,6 +34,7 @@ protected:
     int y = 0;
     Selection * subject;
     int angle;
+    int steps; //AKA as Frames
 
 public:
     Router();
@@ -49,6 +50,7 @@ public:
     void update();
     vector<PathData *> getData();
     void setAngle(int pAngle);
+    void setSteps(int pSteps);
     
 };
 
@@ -113,7 +115,6 @@ Route Router::createRoute(Coordinate pPoint, int pMovement)
     float yMovement = sin(radAngle) * pMovement;
     float xTarget = pPoint.getX() + xMovement;
     float yTarget = pPoint.getY() + yMovement;
-    int steps = 25; //AKA as Frames
     int stepsCompleted = 0;
 
     if (xTarget > this->x)
@@ -255,6 +256,10 @@ vector<PathData *> Router::getData(){
 
 void Router::setAngle(int pAngle){
     this->angle = pAngle;
+}
+
+void Router::setSteps(int pSteps){
+    this->steps = pSteps;
 }
 
 #endif

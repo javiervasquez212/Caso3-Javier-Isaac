@@ -334,7 +334,7 @@ vector<Parameter *> Selection::createParameter(Coordinate pArrayPoint[], int pAr
 This function checks if there is a match between the parameters provided by the user and the paths from the svg
 It Works by the Divide and Conquer design pattern
 
-BigO = O( n log n )
+BigO = O(n log n)
 n = Size of the Parameter Vector (number of points to compare)
 */
 
